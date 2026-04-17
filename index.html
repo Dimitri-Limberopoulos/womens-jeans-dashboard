@@ -41,8 +41,8 @@ h2{font-size:clamp(1.3rem,2.5vw,1.8rem);line-height:1.2}
 .kpi-value{font-size:1.5rem;font-weight:800}
 .kpi-label{font-size:.68rem;color:var(--fg3);font-weight:500;margin-top:1px;line-height:1.4}
 .view-toggle{display:flex;gap:3px;margin-bottom:10px;background:var(--bg3);border-radius:7px;padding:3px;width:fit-content}
-.view-toggle-btn{font-family:'Montserrat',sans-serif;font-size:.68rem;font-weight:600;padding:4px 14px;border:none;border-radius:5px;background:transparent;color:var(--fg3);cursor:pointer;transition:all .15s}
-.view-toggle-btn.active{background:#fff;color:var(--fg);box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.view-toggle-btn{font-family:'Montserrat',sans-serif;font-size:.68rem;font-weight:600;padding:4px 14px;border:1.5px solid var(--bg4);border-radius:5px;background:transparent;color:var(--fg3);cursor:pointer;transition:all .15s}
+.view-toggle-btn.active{background:#002855;color:#fff;border-color:#002855;box-shadow:0 1px 3px rgba(0,0,0,.15)}
 .pill-row{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
 .pill{font-family:'Montserrat',sans-serif;font-size:.68rem;font-weight:600;padding:5px 14px;border:1.5px solid var(--bg4);border-radius:18px;background:transparent;color:var(--fg2);cursor:pointer;transition:all .15s}
 .pill:hover{border-color:var(--fg3);color:var(--fg)}
@@ -891,8 +891,9 @@ function renderSummaryBox() {
 
 function setPriceView(type) {
   priceField = type==='original'?'o':'p';
-  document.querySelectorAll('#sec-price .view-toggle-btn').forEach(function(b,i){
-    b.classList.toggle('active',(type==='current'&&i===0)||(type==='original'&&i===1));
+  document.querySelectorAll('#sec-price .view-toggle-btn, #sec-drilldown .view-toggle-btn').forEach(function(b,i){
+    var idx = i % 2;
+    b.classList.toggle('active',(type==='current'&&idx===0)||(type==='original'&&idx===1));
   });
   renderSummaryBox();
   if(ddGroup) selectDrilldown(ddGroup);
@@ -1461,9 +1462,10 @@ var bubbleYLabelPlugin = {
   }
 };
 
-function drawBubbleChart(canvasId, groupList, bd, labelsOn, bandSize, priceLabel, labelMap) {
+function drawBubbleChart(canvasId, groupList, bd, labelsOn, bandSize, priceLabel, labelMap, sizeMult) {
   destroyChart(canvasId);
   var lm = labelMap || GROUP_LABELS;
+  var sm = sizeMult || 1;
   var yLabels = groupList.map(function(g) { return wrapLabel(lm[g] || g, 18); });
 
   // Fixed canvas height: 60px per row + 80px for axes/padding
@@ -1473,8 +1475,14 @@ function drawBubbleChart(canvasId, groupList, bd, labelsOn, bandSize, priceLabel
   canvasEl.parentElement.style.height = fixedHeight + 'px';
   canvasEl.parentElement.style.minHeight = fixedHeight + 'px';
 
-  // Cap bubble radius so largest bubble fits within row
+  // Scale bubble radius: largest bubble fills row, others proportional (sqrt for area)
   var maxR = rowHeight / 2 - 2;
+  var maxCount = 0;
+  bd.dataPoints.forEach(function(d) { if (d.count > maxCount) maxCount = d.count; });
+  var scaledR = function(count) {
+    if (!maxCount) return 3;
+    return Math.max(3, Math.sqrt(count / maxCount) * maxR * sm);
+  };
 
   var ctx = canvasEl.getContext('2d');
   var chartObj = new Chart(ctx, {
@@ -1484,7 +1492,7 @@ function drawBubbleChart(canvasId, groupList, bd, labelsOn, bandSize, priceLabel
         var pts = bd.dataPoints.filter(function(d) { return d.group === g; });
         return {
           label: lm[g] || g,
-          data: pts.map(function(d) { return { x: d.x, y: d.y, r: Math.min(Math.max(3, d.r), maxR), count: d.count, band: d.band }; }),
+          data: pts.map(function(d) { return { x: d.x, y: d.y, r: scaledR(d.count), count: d.count, band: d.band }; }),
           backgroundColor: GC[g] ? GC[g].light.replace('0.18', '0.55') : 'rgba(100,100,100,0.4)',
           borderColor: GC[g] ? GC[g].border : '#666',
           borderWidth: 1.5
@@ -1549,7 +1557,7 @@ function renderBubblePrice() {
   var rows = RAW.filter(function(r) { return bubbleActiveGroups[r.g]; });
   var bd = buildBubbleData(priceField, bandSize, activeGs, rows, sizeMultiplier);
   var priceLabel = bubblePriceMode === 'current' ? 'Current' : 'Original';
-  drawBubbleChart('bubblePriceCanvas', activeGs, bd, bubbleLabelsOn, bandSize, priceLabel);
+  drawBubbleChart('bubblePriceCanvas', activeGs, bd, bubbleLabelsOn, bandSize, priceLabel, null, sizeMultiplier);
 }
 
 // ── SBS Bubble Chart ─────────────────────────────────────────────────
@@ -1612,7 +1620,7 @@ function renderSBSBubble() {
   var canvas = document.getElementById('sbsBubblePriceCanvas');
   canvas.parentElement.style.minHeight = Math.max(420, brandList.length * 48) + 'px';
 
-  drawBubbleChart('sbsBubblePriceCanvas', brandList, bd, sbsBubbleLabelsOn, bandSize, priceLabel, brandLabelMap);
+  drawBubbleChart('sbsBubblePriceCanvas', brandList, bd, sbsBubbleLabelsOn, bandSize, priceLabel, brandLabelMap, sizeMultiplier);
 
   // Restore GC
   brandList.forEach(function(b) { if (origGC[b] === undefined) { delete GC[b]; } else { GC[b] = origGC[b]; } });
