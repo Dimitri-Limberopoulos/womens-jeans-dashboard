@@ -1,0 +1,330 @@
+{
+  "report_meta": {
+    "title": "American Eagle PDP Data Extraction Analysis",
+    "date": "2026-04-15",
+    "analysis_type": "HTML structure and embedded JSON analysis",
+    "fetch_method": "curl HTTP with proper user agent",
+    "total_urls": 2
+  },
+  "data_sources_available": {
+    "schema_org_json_ld": {
+      "status": "FOUND - Present in both PDPs",
+      "location": "<script type=\"application/ld+json\">",
+      "implementation": "Standard schema.org Product schema for SEO"
+    },
+    "next_js_data": {
+      "status": "NOT_FOUND",
+      "note": "PDPs do not use __NEXT_DATA__ for product information"
+    },
+    "window_variables": {
+      "status": "NOT_FOUND",
+      "note": "No global JavaScript product variables detected"
+    },
+    "data_attributes": {
+      "status": "FOUND",
+      "count": 71,
+      "examples": [
+        "data-awo",
+        "data-dropdown-off",
+        "data-embroider-ignore",
+        "data-modal",
+        "data-nr-block",
+        "data-nr-mask",
+        "data-path",
+        "data-request",
+        "data-route",
+        "data-test",
+        "data-test-accessibility-link",
+        "data-test-accordion-body-visible",
+        "data-test-active",
+        "data-test-btn",
+        "data-test-change-order",
+        "data-test-color-swatch",
+        "data-test-color-swatches",
+        "data-test-select-size"
+      ]
+    },
+    "meta_tags": {
+      "status": "FOUND",
+      "note": "Open Graph and standard meta tags present"
+    }
+  },
+  "products": [
+    {
+      "product_number": 1,
+      "url": "https://www.ae.com/intl/en/p/women/ae77-premium-denim/wide-leg-jeans/ae77-premium-wide-crop-cuff-jean/7302_4947_936",
+      "product_id": "7302_4947_936",
+      "html_size_bytes": 512195,
+      "json_ld_data": {
+        "@context": "http://schema.org",
+        "@type": "Product",
+        "name": "AE77 Premium Wide Crop Cuff Jean",
+        "sku": "7302_4947_936",
+        "description": "A chic, on-trend low-rise jean cut from stunning heavyweight selvedge denim. Made to get better with time.",
+        "image": "//s7d2.scene7.com/is/image/aeo/7302_4947_936_of",
+        "brand": {
+          "@type": "Brand",
+          "name": "AE"
+        },
+        "color": "Medium Wash",
+        "material": "100% Organic Cotton",
+        "offers": {
+          "@type": "Offer",
+          "price": "138",
+          "priceCurrency": "USD",
+          "availability": "http://schema.org/InStock",
+          "url": "https://www.ae.com/intl/en/p/women/ae77-premium-denim/wide-leg-jeans/ae77-premium-wide-crop-cuff-jean/7302_4947_936"
+        }
+      },
+      "extractable_fields_from_json_ld": [
+        "@type",
+        "name",
+        "brand",
+        "description",
+        "sku",
+        "image",
+        "offers",
+        "color",
+        "material"
+      ],
+      "all_json_ld_keys": [
+        "@context",
+        "@type",
+        "name",
+        "sku",
+        "description",
+        "image",
+        "brand",
+        "color",
+        "material",
+        "offers"
+      ],
+      "data_attributes_count": 70,
+      "sample_data_attributes": [
+        "data-test-color-swatch",
+        "data-test-color-swatches",
+        "data-test-select-size",
+        "data-test-product-prices",
+        "data-test-list-price"
+      ]
+    },
+    {
+      "product_number": 2,
+      "url": "https://www.ae.com/intl/en/p/women/jeans/flare-bootcut-jeans/ae-next-level-super-high-waisted-embroidered-flare-jean/1436_6187_909",
+      "product_id": "1436_6187_909",
+      "html_size_bytes": 530513,
+      "json_ld_data": {
+        "@context": "http://schema.org",
+        "@type": "Product",
+        "name": "AE Next Level Super High-Waisted Embroidered Flare Jean",
+        "sku": "1436_6187_909",
+        "description": "A body-hugging, leg-lengthening fit with a super high rise & flared leg. This style features an embroidered detail on the flared leg opening.",
+        "image": "//s7d2.scene7.com/is/image/aeo/1436_6187_909_of",
+        "brand": {
+          "@type": "Brand",
+          "name": "AE"
+        },
+        "color": "Medium Tinted",
+        "material": "62% Cotton, 16% Recycled Cotton, 14% Recycled Polyester, 6% Viscose, 2% Elastane",
+        "offers": {
+          "@type": "Offer",
+          "price": "79.95",
+          "priceCurrency": "USD",
+          "availability": "http://schema.org/InStock",
+          "url": "https://www.ae.com/intl/en/p/women/jeans/flare-bootcut-jeans/ae-next-level-super-high-waisted-embroidered-flare-jean/1436_6187_909"
+        }
+      },
+      "extractable_fields_from_json_ld": [
+        "@type",
+        "name",
+        "brand",
+        "description",
+        "sku",
+        "image",
+        "offers",
+        "color",
+        "material"
+      ],
+      "all_json_ld_keys": [
+        "@context",
+        "@type",
+        "name",
+        "sku",
+        "description",
+        "image",
+        "brand",
+        "color",
+        "material",
+        "offers"
+      ],
+      "data_attributes_count": 71,
+      "sample_data_attributes": [
+        "data-test-color-swatch",
+        "data-test-color-swatches",
+        "data-test-select-size",
+        "data-test-product-badge-rating",
+        "data-test-product-prices"
+      ]
+    }
+  ],
+  "field_extraction_guide": {
+    "product_basics": {
+      "name": {
+        "json_path": "json_ld.name",
+        "example": "AE77 Premium Wide Crop Cuff Jean"
+      },
+      "brand": {
+        "json_path": "json_ld.brand.name",
+        "example": "AE"
+      },
+      "product_id": {
+        "json_path": "json_ld.sku",
+        "example": "7302_4947_936"
+      },
+      "sku": {
+        "json_path": "json_ld.sku",
+        "example": "7302_4947_936"
+      }
+    },
+    "description_and_attributes": {
+      "full_description": {
+        "json_path": "json_ld.description",
+        "example": "A chic, on-trend low-rise jean cut from stunning heavyweight selvedge denim. Made to get better with time."
+      },
+      "color": {
+        "json_path": "json_ld.color",
+        "example": "Medium Wash"
+      },
+      "material": {
+        "json_path": "json_ld.material",
+        "example": "100% Organic Cotton"
+      }
+    },
+    "pricing": {
+      "current_price": {
+        "json_path": "json_ld.offers.price",
+        "type": "string",
+        "example": "138"
+      },
+      "currency": {
+        "json_path": "json_ld.offers.priceCurrency",
+        "example": "USD"
+      },
+      "availability": {
+        "json_path": "json_ld.offers.availability",
+        "example": "http://schema.org/InStock"
+      }
+    },
+    "images": {
+      "source": {
+        "json_path": "json_ld.image",
+        "format": "Single URL string or array of URLs",
+        "example": "//s7d2.scene7.com/is/image/aeo/7302_4947_936_of"
+      }
+    },
+    "product_specific_attributes": {
+      "rise": {
+        "extraction_method": "Parse from description text or data-test attributes",
+        "examples": ["Low Rise", "Mid Rise", "High Rise", "Super High Rise"],
+        "found_in_product_1": "Low-rise (implied in description)",
+        "found_in_product_2": "Super high rise (stated in description)"
+      },
+      "leg_cut": {
+        "extraction_method": "Parse from product name or description",
+        "examples": ["Skinny", "Slim", "Straight", "Wide Leg", "Flare", "Bootcut", "Crop"],
+        "found_in_product_1": "Wide Crop (from product name)",
+        "found_in_product_2": "Flare (from product name)"
+      },
+      "fit_line": {
+        "extraction_method": "Parse from product name or data attributes",
+        "examples": ["AE77", "NEXT LEVEL", "Original", "Classic"],
+        "found_in_product_1": "AE77 (from product name)",
+        "found_in_product_2": "Next Level (from product name)"
+      }
+    }
+  },
+  "extractable_data_summary": {
+    "product_1": {
+      "name": "AE77 Premium Wide Crop Cuff Jean",
+      "brand": "AE",
+      "sku": "7302_4947_936",
+      "price": "138",
+      "currency": "USD",
+      "availability": "In Stock",
+      "color": "Medium Wash",
+      "material": "100% Organic Cotton",
+      "rise": "Low Rise",
+      "leg_cut": "Wide Leg Crop",
+      "fit_line": "AE77 Premium Denim",
+      "image_url": "//s7d2.scene7.com/is/image/aeo/7302_4947_936_of"
+    },
+    "product_2": {
+      "name": "AE Next Level Super High-Waisted Embroidered Flare Jean",
+      "brand": "AE",
+      "sku": "1436_6187_909",
+      "price": "79.95",
+      "currency": "USD",
+      "availability": "In Stock",
+      "color": "Medium Tinted",
+      "material": "62% Cotton, 16% Recycled Cotton, 14% Recycled Polyester, 6% Viscose, 2% Elastane",
+      "rise": "Super High Waisted",
+      "leg_cut": "Flare",
+      "fit_line": "NEXT LEVEL",
+      "image_url": "//s7d2.scene7.com/is/image/aeo/1436_6187_909_of"
+    }
+  },
+  "recommended_scraping_approach": {
+    "primary_method": {
+      "name": "JSON-LD Structured Data Extraction",
+      "description": "Most reliable method - data is static and SEO-optimized",
+      "steps": [
+        "1. Fetch HTML page with proper User-Agent header",
+        "2. Use regex to locate <script type='application/ld+json'> tag",
+        "3. Parse the JSON content",
+        "4. Extract all product fields from the JSON object"
+      ],
+      "coverage": [
+        "Product name, brand, SKU",
+        "Price, currency, availability",
+        "Description, color, material",
+        "Product image URL"
+      ],
+      "reliability": "HIGH - Data is embedded in initial HTML response",
+      "data_freshness": "Real-time - updated with page content"
+    },
+    "secondary_method": {
+      "name": "HTML Data Attributes and Meta Tags",
+      "description": "Supplementary method for variant data and additional details",
+      "steps": [
+        "1. Parse HTML DOM for data-test-* attributes",
+        "2. Extract color and size information from data attributes",
+        "3. Parse meta tags (og:title, og:description, og:image)",
+        "4. Extract product pricing and availability from DOM elements"
+      ],
+      "coverage": [
+        "Color variants (data-test-color-swatch)",
+        "Size options (data-test-select-size)",
+        "Product images",
+        "Pricing information"
+      ],
+      "reliability": "MEDIUM - Requires DOM parsing, subject to HTML structure changes",
+      "data_freshness": "Real-time - reflects current page state"
+    }
+  },
+  "implementation_notes": {
+    "note_1": "Primary data source: JSON-LD Product schema is reliable and consistent across both PDPs",
+    "note_2": "Both URLs return complete product information in initial HTML (no AJAX/API calls needed)",
+    "note_3": "Price data is clearly available in offers.price field",
+    "note_4": "Product attributes (rise, leg cut, fit) are extractable from product name and description",
+    "note_5": "Color and size variants require secondary parsing from HTML data- attributes",
+    "note_6": "Material/fabric composition is available in the material field",
+    "note_7": "No authentication required - PDPs are publicly accessible",
+    "note_8": "Use proper User-Agent header to avoid potential blocking",
+    "note_9": "Rate limiting recommended: 1-2 second delay between requests",
+    "note_10": "BeautifulSoup (HTML parsing) + json module (JSON-LD extraction) are sufficient for scraping"
+  },
+  "python_scraping_template": {
+    "libraries": ["requests", "json", "re", "BeautifulSoup4 (optional)"],
+    "sample_code": "import json\nimport re\nimport requests\n\ndef extract_ae_product(url):\n    headers = {\n        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36'\n    }\n    \n    response = requests.get(url, headers=headers, timeout=10)\n    html = response.text\n    \n    # Find and extract JSON-LD\n    match = re.search(r'<script[^>]*type=\"application/ld\\+json\"[^>]*>(.*?)</script>', html, re.DOTALL)\n    if match:\n        jsonld = json.loads(match.group(1))\n        \n        # Extract structured data\n        product = {\n            'name': jsonld.get('name'),\n            'brand': jsonld.get('brand', {}).get('name'),\n            'sku': jsonld.get('sku'),\n            'price': jsonld.get('offers', {}).get('price'),\n            'currency': jsonld.get('offers', {}).get('priceCurrency'),\n            'availability': jsonld.get('offers', {}).get('availability'),\n            'description': jsonld.get('description'),\n            'color': jsonld.get('color'),\n            'material': jsonld.get('material'),\n            'image': jsonld.get('image')\n        }\n        \n        return product\n    \n    return None\n\n# Usage\nurl = 'https://www.ae.com/intl/en/p/women/ae77-premium-denim/wide-leg-jeans/ae77-premium-wide-crop-cuff-jean/7302_4947_936'\nproduct_data = extract_ae_product(url)\nprint(json.dumps(product_data, indent=2))"
+  }
+}

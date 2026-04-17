@@ -1,0 +1,173 @@
+{
+  "analysis_date": "2026-04-15",
+  "analysis_type": "PDP HTML Scraping Analysis",
+  "site": "oldnavy.gap.com",
+  "technology_stack": {
+    "frontend_framework": "Next.js",
+    "rendering_mode": "Client-Side Rendering (CSR) with Server-Side Hydration",
+    "state_management": "Not determined from static HTML",
+    "build_version": "1ce7e31676-2026-04-13"
+  },
+  "pdps": [
+    {
+      "url": "https://oldnavy.gap.com/browse/product.do?pid=894206002&vid=1&pcid=85729&cid=85729",
+      "html_size_bytes": 855592,
+      "framework": "Next.js (CSR)",
+      "data_sources_available": {
+        "window.gap": {
+          "found": true,
+          "description": "Global configuration and metadata"
+        },
+        "window.brandMarketInfo": {
+          "found": true,
+          "description": "Brand and market information"
+        }
+      },
+      "scrapable_fields": {
+        "data_attributes": {
+          "source": "Element data-* attributes",
+          "attributes_found": [
+            "brand",
+            "categoryid",
+            "content-id",
+            "content-reference",
+            "divisionname",
+            "emotion",
+            "hui-rewrite",
+            "marketing-slot",
+            "precedence",
+            "testid"
+          ],
+          "extraction_method": "querySelector(\"[data-productid]\") or similar",
+          "confidence": "High"
+        },
+        "product_images": {
+          "source": "<img> and <picture> elements",
+          "count_found": 3,
+          "extraction_method": "querySelectorAll(\"img[alt*=product]\")",
+          "confidence": "High"
+        },
+        "pricing": {
+          "source": "Text content with $ currency",
+          "example_prices": [
+            "$1",
+            "$10",
+            "$11",
+            "$12",
+            "$13"
+          ],
+          "extraction_method": "Regex: /\\$(\\d+\\.?\\d*)/g",
+          "confidence": "Medium (needs context)"
+        }
+      },
+      "json_data_paths": {},
+      "technical_notes": [
+        "__NEXT_DATA__ not found - likely full CSR page",
+        "ld+json schema data not found in static HTML"
+      ],
+      "runtime_only_data": {
+        "note": "These fields are populated by React/JavaScript at runtime and NOT in initial HTML",
+        "fields": [
+          "Product details (full name, description, specifications)",
+          "Complete variant availability and pricing",
+          "Reviews and ratings",
+          "Inventory/stock status",
+          "Recommended products",
+          "Complete color/size variant swatches and images"
+        ],
+        "extraction_approach": "Use Playwright/Puppeteer to render page and wait for data load"
+      },
+      "potential_api_endpoints": {
+        "note": "Check browser Network tab to find API calls when page loads",
+        "likely_endpoints": [
+          "/api/product/[pid]",
+          "/api/product/[pid]/details",
+          "/api/product/[pid]/variants",
+          "/api/product/[pid]/pricing",
+          "GraphQL endpoint for product queries",
+          "/browse/product.do?pid=[pid]&vid=[vid] (itself is a GraphQL or API endpoint)"
+        ]
+      }
+    },
+    {
+      "url": "https://oldnavy.gap.com/browse/product.do?pid=734874002&vid=1&pcid=85729&cid=85729",
+      "html_size_bytes": 855592,
+      "framework": "Next.js (CSR)",
+      "data_sources_available": {
+        "window.gap": {
+          "found": true,
+          "description": "Global configuration and metadata"
+        },
+        "window.brandMarketInfo": {
+          "found": true,
+          "description": "Brand and market information"
+        }
+      },
+      "scrapable_fields": {
+        "data_attributes": {
+          "source": "Element data-* attributes",
+          "attributes_found": [
+            "brand",
+            "categoryid",
+            "content-id",
+            "content-reference",
+            "divisionname",
+            "emotion",
+            "hui-rewrite",
+            "marketing-slot",
+            "precedence",
+            "testid"
+          ],
+          "extraction_method": "querySelector(\"[data-productid]\") or similar",
+          "confidence": "High"
+        },
+        "product_images": {
+          "source": "<img> and <picture> elements",
+          "count_found": 3,
+          "extraction_method": "querySelectorAll(\"img[alt*=product]\")",
+          "confidence": "High"
+        },
+        "pricing": {
+          "source": "Text content with $ currency",
+          "example_prices": [
+            "$1",
+            "$10",
+            "$11",
+            "$12",
+            "$13"
+          ],
+          "extraction_method": "Regex: /\\$(\\d+\\.?\\d*)/g",
+          "confidence": "Medium (needs context)"
+        }
+      },
+      "json_data_paths": {},
+      "technical_notes": [
+        "__NEXT_DATA__ not found - likely full CSR page",
+        "ld+json schema data not found in static HTML"
+      ],
+      "runtime_only_data": {
+        "note": "These fields are populated by React/JavaScript at runtime and NOT in initial HTML",
+        "fields": [
+          "Product details (full name, description, specifications)",
+          "Complete variant availability and pricing",
+          "Reviews and ratings",
+          "Inventory/stock status",
+          "Recommended products",
+          "Complete color/size variant swatches and images"
+        ],
+        "extraction_approach": "Use Playwright/Puppeteer to render page and wait for data load"
+      },
+      "potential_api_endpoints": {
+        "note": "Check browser Network tab to find API calls when page loads",
+        "likely_endpoints": [
+          "/api/product/[pid]",
+          "/api/product/[pid]/details",
+          "/api/product/[pid]/variants",
+          "/api/product/[pid]/pricing",
+          "GraphQL endpoint for product queries",
+          "/browse/product.do?pid=[pid]&vid=[vid] (itself is a GraphQL or API endpoint)"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,245 @@
+================================================================================
+OLD NAVY PDP SCRAPING ANALYSIS REPORT
+================================================================================
+Analysis Date: 2026-04-15
+URLs Analyzed: 2 Old Navy Product Detail Pages
+Target Jeans Category: Women's Jeans
+
+EXECUTIVE SUMMARY
+================================================================================
+
+Old Navy uses a modern Next.js architecture with CLIENT-SIDE RENDERING (CSR).
+This means product data is NOT available in the initial HTML response - it is
+loaded dynamically via JavaScript after the page renders in the browser.
+
+TECHNOLOGY STACK
+================================================================================
+Frontend Framework:     Next.js (React)
+Rendering Mode:        Client-Side Rendering (CSR) with Hydration
+Build Version:         1ce7e31676-2026-04-13
+Build Date:            2026-04-13
+State Management:       Unknown (likely Redux, Context API, or SWR)
+Global Objects:        window.gap, window.brandMarketInfo
+
+
+KEY FINDING: STATIC HTML LIMITATIONS
+================================================================================
+
+The initial HTML response (855KB gzip-compressed, 856KB uncompressed) contains:
+✓ Global configuration (window.gap object with brand, locale, etc.)
+✓ Brand/market metadata (window.brandMarketInfo)
+✓ Page shell structure and minimal content
+✓ Data attributes for component identification
+✗ NO product details (name, price, description)
+✗ NO variant information (colors, sizes)
+✗ NO images (placeholder structure only)
+✗ NO __NEXT_DATA__ script tag with hydration data
+✗ NO ld+json schema.org structured data
+✗ NO reviews/ratings data
+
+
+WHAT'S AVAILABLE IN STATIC HTML
+================================================================================
+
+Data Source 1: window.gap Object
+  Location: First inline <script> tag
+  Content: {brand, market, locale, breakpoint, buildVersion, ...}
+  
+Data Source 2: window.brandMarketInfo Object
+  Location: First inline <script> tag
+  Content: {brand, displayName, marketInfo, tracking servers, ...}
+
+Data Source 3: Data Attributes
+  Found on elements throughout the page:
+  - data-brand
+  - data-categoryid
+  - data-content-id
+  - data-content-reference
+  - data-divisionname
+  - data-emotion
+  - data-hui-rewrite
+  - data-marketing-slot
+  - data-precedence
+  - data-testid
+
+Data Source 4: Meta Tags
+  - <meta property="og:title">
+  - <meta property="og:description">
+  - <meta property="og:image">
+  - Standard <title> tag
+
+Data Source 5: Prices (Limited)
+  - Basic price text scattered throughout ($1-$50)
+  - No association with products/variants
+  - Confidence: LOW
+
+
+FIELDS NOT AVAILABLE IN STATIC HTML
+================================================================================
+
+The following product fields REQUIRE JavaScript execution to extract:
+
+Core Product Data:
+  ✗ Product name/title
+  ✗ Brand
+  ✗ Product description/details
+  ✗ Category breadcrumbs
+  ✗ Product URL/slug
+
+Pricing:
+  ✗ Current price
+  ✗ Original/list price
+  ✗ Sale price/discount
+  ✗ Price per unit (if applicable)
+
+Variants & Options:
+  ✗ Color variants (names, hex codes, swatch images)
+  ✗ Size variants (XS, S, M, L, XL, etc.)
+  ✗ Fit types (Slim, Skinny, Straight, Boot Cut, Flare, etc.)
+  ✗ Rise options (Low, Mid, High)
+  ✗ Inseam lengths
+  ✗ Fabric composition/material
+  ✗ Wash types (Light, Medium, Dark, etc.)
+  ✗ Variant pricing/availability
+
+Media:
+  ✗ Product images (main, alternate views)
+  ✗ Color swatch images
+  ✗ 360-degree views
+  ✗ Video content
+
+Additional Data:
+  ✗ Reviews and ratings (count, average rating)
+  ✗ Inventory/stock status
+  ✗ Recommended products/related items
+  ✗ Customer reviews (text)
+  ✗ Size charts
+  ✗ Shipping information
+  ✗ Return policy details
+
+
+RECOMMENDED SCRAPING APPROACH
+================================================================================
+
+Given the CSR architecture, there are 2 viable scraping strategies:
+
+OPTION 1: BROWSER AUTOMATION (Recommended for Jeans Data)
+────────────────────────────────────────────────────────────
+Use: Playwright, Puppeteer, or Selenium
+Approach:
+  1. Navigate to product URL
+  2. Wait for React rendering to complete (typically 2-5 seconds)
+  3. Wait for specific product elements to appear in DOM
+  4. Use CSS selectors to extract product data from rendered HTML/DOM
+  5. Parse variant buttons, prices, images, etc.
+  
+Advantages:
+  ✓ Extracts ALL product data (names, variants, prices, images)
+  ✓ Captures real-time inventory/availability
+  ✓ Can click buttons to load variant details/images
+  ✓ Handles dynamic pricing
+  
+Disadvantages:
+  ✗ Slower (2-10 seconds per product)
+  ✗ Resource-intensive (memory, CPU)
+  ✗ More prone to false negatives
+  
+Estimated Rate: 5-15 products/minute
+
+
+OPTION 2: API REVERSE ENGINEERING
+──────────────────────────────────────
+Use: Inspect Network tab to identify API endpoints
+Approach:
+  1. Open page in browser
+  2. Monitor Network tab for XHR/Fetch requests
+  3. Identify API endpoints called (likely /api/product/[pid] or GraphQL)
+  4. Extract API headers and query parameters
+  5. Call API directly with product IDs
+  
+Advantages:
+  ✓ Much faster (50-100+ products/minute)
+  ✓ Lower resource usage
+  ✓ More reliable parsing
+  ✓ Can batch requests
+  
+Disadvantages:
+  ✗ Requires reverse engineering of API
+  ✗ More fragile (API changes break scraper)
+  ✗ Potential detection/blocking
+  
+Note: Old Navy likely has API endpoints since they use Next.js + CSR pattern
+
+
+IMPLEMENTATION NOTES FOR WOMEN'S JEANS
+================================================================================
+
+Key Selectors to Target:
+  - Color swatch buttons (likely: [data-color] or .color-swatch)
+  - Size buttons (likely: [data-size] or .size-option)
+  - Price containers (likely: .price, [data-price], or .price-current)
+  - Product images (likely: <img> with product ID in src/alt)
+  - Product title (likely: <h1> or main product heading)
+  
+Denim-Specific Fields to Extract:
+  - Fit/Cut: Skinny, Slim, Straight, Bootcut, Flare, Jegging, etc.
+  - Rise: Low, Mid, High
+  - Inseam: 26", 28", 30", 32", etc.
+  - Wash: Light Blue, Medium Wash, Dark Wash, Black, White, etc.
+  - Material: 100% Cotton, Cotton Blend, Stretch Denim, etc.
+  - Leg Type: Full Length, Capri, Crop, etc.
+
+Wait Strategy:
+  - Wait for product title to appear (confirm page loaded)
+  - Wait for variant buttons to be interactive
+  - Wait for images to load in <img> tags
+  - Use: await page.waitForSelector('.product-title', {timeout: 10000})
+
+
+COMPRESSION NOTES
+================================================================================
+
+HTML Response Encoding:
+  - Initial fetch returns BROTLI-compressed HTML (Content-Encoding: br)
+  - Compressed size: ~130-131 KB
+  - Uncompressed size: ~856 KB
+  
+Decompression:
+  import brotli
+  html = brotli.decompress(response_body).decode('utf-8')
+
+
+FILE LOCATIONS & PATHS
+================================================================================
+
+Analysis Results JSON: oldnavy_pdp_analysis.json
+  - Detailed findings from both test URLs
+  - Data sources breakdown
+  - Scrapable fields summary
+  - Technical notes and recommendations
+
+URLs Tested:
+  1. https://oldnavy.gap.com/browse/product.do?pid=894206002&vid=1&pcid=85729&cid=85729
+  2. https://oldnavy.gap.com/browse/product.do?pid=734874002&vid=1&pcid=85729&cid=85729
+
+
+CONCLUSION
+================================================================================
+
+Old Navy REQUIRES BROWSER AUTOMATION or API reverse engineering to scrape
+product data. Static HTML parsing is NOT viable due to client-side rendering.
+
+For women's jeans specifically:
+  1. Recommend Playwright-based scraper with comprehensive selector strategy
+  2. Target wait conditions: product title, variant buttons, images loaded
+  3. Extract color/size combinations and their specific pricing/availability
+  4. Parse denim-specific attributes from product descriptions
+  5. Implement retry logic for timeout resilience
+  
+Estimated complexity: MEDIUM
+Estimated development time: 4-8 hours for functional prototype
+Estimated per-product scrape time: 3-8 seconds with browser
+
+================================================================================
+END OF REPORT
+================================================================================
