@@ -1,0 +1,60 @@
+{
+  "_metadata": {
+    "source": "Google web search (levi.com page titles and product descriptions)",
+    "date": "2026-04-17",
+    "method": "WebSearch for 'site:levi.com [product_code]' and cross-references with Levi's regional sites (GB, NL, IT, GR, PL, ES) and retailers (Amazon, Macy's). Color names extracted from page titles following Levi's 'Product - COLOR | Levi's US' pattern. Where specific Levi's color name was found in search snippet, it is included before the wash category.",
+    "notes": "3 codes could not be resolved (125010382, 188830294, 196260654) - likely discontinued or never indexed. For these, wash category is inferred from neighboring codes in the same style family."
+  },
+
+  "001V10006": "Black",
+
+  "001W10012": "Medium Wash",
+
+  "0039A0007": "Medium Wash",
+
+  "003NF0002": "Black",
+  "003NF0003": "Black",
+  "003NF0004": "Medium Wash",
+
+  "125010396": "Medium Indigo Worn In - Blue",
+  "125010412": "Swan Island - Black",
+  "125010452": "Take A Hint - Black",
+  "125010382": "Dark Wash",
+
+  "187590240": "White",
+  "187590275": "Black",
+  "187590115": "Dark Wash",
+  "187590116": "Light Wash",
+  "187590122": "Blue",
+  "187590234": "Triangle Exploration - Blue",
+  "187590195": "Dark Wash",
+
+  "188810708": "New Sheriff - Medium Wash",
+  "188810775": "Time Transport - Black",
+  "188810781": "Medium Wash",
+
+  "188820868": "Miles Apart - Dark Wash",
+  "188820869": "Liberty Life - Blue",
+  "188820734": "Urgent Update - Black",
+  "188820736": "Emblem Of Story - Light Wash",
+  "188820786": "Cool Money - Medium Wash",
+
+  "188830207": "Blue Wave - Dark Wash",
+  "188830209": "Blue Wave - Light Wash",
+  "188830227": "Dark Wash",
+  "188830199": "Never Forget - Black",
+  "188830294": "Medium Wash",
+  "188830277": "We Have Arrived - Medium Wash",
+  "188830324": "Urgent Update - Black",
+  "188830378": "Dusty Travertine - Tan",
+
+  "196260654": "Dark Wash",
+  "196260518": "Medium Wash",
+  "196260558": "Cool Agenda - Dark Wash",
+  "196260611": "Light Wash",
+
+  "196310208": "Safari - Tan",
+  "196310214": "Twice The Time - Medium Wash",
+
+  "196320160": "Medium Wash"
+}
