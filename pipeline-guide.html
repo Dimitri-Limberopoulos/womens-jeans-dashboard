@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cross-Retailer Product Dashboard — Pipeline Guide</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Arial,Helvetica,sans-serif;background:#fff;color:#1A1A1A;line-height:1.65;-webkit-font-smoothing:antialiased}
+.page{max-width:920px;margin:0 auto;padding:48px 40px 80px}
+
+/* Title block */
+.title-block{padding:40px 0 28px;border-bottom:1.5px solid #1A1A1A}
+.title-block h1{font-family:'Arial Black',Arial,sans-serif;font-size:28px;font-weight:900;color:#1A1A1A;letter-spacing:-0.02em;line-height:1.15}
+.title-block h1 span.light{font-family:Arial,sans-serif;font-weight:400;color:#444}
+.title-block .pipe{color:#C0C0C0;font-weight:400;font-family:Arial,sans-serif}
+.title-block .subtitle{font-size:13px;color:#666;margin-top:10px;line-height:1.6;max-width:700px}
+
+/* Section numbering */
+.section{padding:36px 0 0}
+.section-divider{border:none;border-top:0.5px solid #C0C0C0;margin:36px 0 0}
+.section-head{display:flex;align-items:baseline;gap:14px;margin-bottom:6px}
+.section-num{font-family:'Arial Black',Arial,sans-serif;font-size:15px;font-weight:900;color:#002855;letter-spacing:0.01em;min-width:22px}
+.section-title{font-family:'Arial Black',Arial,sans-serif;font-size:15px;font-weight:900;color:#1A1A1A;letter-spacing:-0.01em}
+.section-desc{font-size:11.5px;color:#666;margin-bottom:20px;padding-left:36px;line-height:1.6}
+
+/* Body text */
+.body{font-size:11.5px;color:#666;line-height:1.7;margin-bottom:14px;padding-left:36px}
+.body b,.body strong{color:#1A1A1A;font-weight:700}
+.body-lead{font-size:11.5px;color:#1A1A1A;font-weight:700;margin-bottom:2px;padding-left:36px}
+
+/* Content cards */
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0 16px 36px}
+.cards.three{grid-template-columns:1fr 1fr 1fr}
+.cards.one{grid-template-columns:1fr}
+.card{background:#F5F5F5;padding:16px 18px;border-left:3.5px solid #002855;position:relative}
+.card-title{font-size:11px;font-weight:700;color:#1A1A1A;margin-bottom:4px;letter-spacing:0.01em}
+.card-body{font-size:10.5px;color:#666;line-height:1.6}
+.card-body code{font-family:'SF Mono',Consolas,monospace;font-size:10px;background:#EAEAEA;padding:1px 5px;border-radius:2px;color:#1A1A1A}
+.card.accent-gray{border-left-color:#999}
+.card.accent-red{border-left-color:#C0392B}
+.card.accent-green{border-left-color:#27AE60}
+
+/* Phase flow */
+.flow{display:flex;align-items:center;gap:0;margin:20px 0 20px 36px;flex-wrap:wrap}
+.flow-step{background:#F5F5F5;padding:10px 16px;font-size:10.5px;font-weight:700;color:#1A1A1A;text-align:center;min-width:120px;border-bottom:2.5px solid #002855}
+.flow-arrow{font-size:16px;color:#C0C0C0;padding:0 6px;font-weight:400}
+.flow-step small{display:block;font-weight:400;color:#666;font-size:9.5px;margin-top:2px}
+
+/* Code blocks */
+.code-block{background:#F5F5F5;padding:14px 18px;margin:12px 0 16px 36px;font-family:'SF Mono',Consolas,monospace;font-size:10px;line-height:1.7;color:#1A1A1A;overflow-x:auto;border-left:3.5px solid #C0C0C0}
+.code-block .comment{color:#999}
+
+/* Tables */
+.tbl-wrap{margin:12px 0 16px 36px;overflow-x:auto}
+table{border-collapse:collapse;font-size:10.5px;width:100%}
+th{text-align:left;font-weight:700;color:#1A1A1A;padding:7px 12px;border-bottom:1.5px solid #1A1A1A;font-size:10px;letter-spacing:0.03em;text-transform:uppercase}
+td{padding:7px 12px;border-bottom:0.5px solid #E0E0E0;color:#666;vertical-align:top}
+td:first-child{color:#1A1A1A;font-weight:600}
+tr:last-child td{border-bottom:none}
+
+/* Callout */
+.callout{font-size:11px;color:#666;font-style:italic;padding:12px 18px;margin:14px 0 10px 36px;border-left:3px solid #002855;background:#FAFAFA;line-height:1.6}
+
+/* Numbered list */
+.steps{padding-left:36px;margin:10px 0 16px}
+.step{display:flex;gap:10px;margin-bottom:10px;font-size:11px;color:#666;line-height:1.6}
+.step-num{font-family:'Arial Black',Arial,sans-serif;font-size:11px;color:#002855;min-width:16px;font-weight:900}
+.step b{color:#1A1A1A}
+
+/* Inline code */
+code{font-family:'SF Mono',Consolas,monospace;font-size:10px;background:#F0F0F0;padding:1px 5px;border-radius:2px}
+
+/* Footer */
+.footer{margin-top:48px;padding-top:20px;border-top:0.5px solid #C0C0C0;font-size:9px;color:#C0C0C0;text-align:right}
+
+/* Responsive */
+@media(max-width:700px){
+  .page{padding:28px 20px 60px}
+  .cards{grid-template-columns:1fr}
+  .cards.three{grid-template-columns:1fr}
+  .flow{flex-direction:column;align-items:stretch}
+  .flow-arrow{transform:rotate(90deg);text-align:center}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ─── TITLE ──────────────────────────────────────────────────────── -->
+<div class="title-block">
+  <h1>Cross-Retailer Product Dashboard <span class="pipe">&nbsp;|&nbsp;</span> <span class="light">End-to-End Pipeline Guide</span></h1>
+  <p class="subtitle">How to scrape product data from any set of retail websites, clean and classify it, and render an interactive single-file HTML dashboard — from zero to deployed. No server, no database, no API keys.</p>
+</div>
+
+<!-- ─── PIPELINE OVERVIEW ─────────────────────────────────────────── -->
+<div class="section">
+  <div class="section-head">
+    <span class="section-num"></span>
+    <span class="section-title">The Pipeline at a Glance</span>
+  </div>
+  <p class="body">Five phases, each independently re-runnable. You only re-execute from the phase where something changed.</p>
+
+  <div class="flow">
+    <div class="flow-step">URL Collection<small>Chrome extension</small></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step">PDP Scraping<small>Playwright / web_fetch</small></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step">Data Cleaning<small>Python</small></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step">Dashboard Build<small>JS + Python</small></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step">Deployment<small>GitHub Pages</small></div>
+  </div>
+
+  <div class="cards three">
+    <div class="card">
+      <div class="card-title">What You Need</div>
+      <div class="card-body">Google Chrome, Python 3, a GitHub account. No paid tools or subscriptions.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Time Estimate</div>
+      <div class="card-body">~4–6 hours for a 5-retailer, 3,000-URL project. Mostly scraping wait time.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Output</div>
+      <div class="card-body">One self-contained HTML file. Works offline. Deploys to GitHub Pages in one push.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── PHASE 1 ───────────────────────────────────────────────────── -->
+<hr class="section-divider">
+<div class="section">
+  <div class="section-head">
+    <span class="section-num">1.</span>
+    <span class="section-title">Collect Product URLs</span>
+  </div>
+  <p class="section-desc">Use Instant Data Scraper to grab every product URL from a retailer's category page. One CSV per retailer.</p>
+
+  <p class="body-lead">Setup</p>
+  <p class="body">Install <a href="https://chrome.google.com/webstore/detail/instant-data-scraper/ofaokhiedipichpaobibbnahnkdoiiah" style="color:#002855">Instant Data Scraper</a> from the Chrome Web Store. It's free and requires no configuration.</p>
+
+  <p class="body-lead">How It Works</p>
+  <div class="steps">
+    <div class="step"><span class="step-num">1</span><span>Navigate to the retailer's <b>full category page</b> (e.g., target.com/c/womens-jeans). Make sure the page title says "All" — not a filtered subset.</span></div>
+    <div class="step"><span class="step-num">2</span><span>Click the Instant Data Scraper icon. It auto-detects the product grid. If it picks the wrong table, click <b>"Try another table"</b> until the URLs appear.</span></div>
+    <div class="step"><span class="step-num">3</span><span>Click <b>"Start crawling"</b> — it paginates automatically through all pages.</span></div>
+    <div class="step"><span class="step-num">4</span><span>When finished, click <b>Download → CSV</b>. Save to your project folder as <code>{retailer}.csv</code>.</span></div>
+  </div>
+
+  <div class="callout">For retailers that use infinite scroll instead of numbered pages, scroll to the bottom manually first to load all products, then run the scraper. De-duplicate URLs before moving to Phase 2 — some retailers list the same product across multiple category views.</div>
+
+  <p class="body-lead">Output</p>
+  <p class="body">One CSV per retailer. The scraper captures many columns — you only need the <b>URL column</b> (typically the first column, or one named "href" / "link").</p>
+</div>
+
+<!-- ─── PHASE 2 ───────────────────────────────────────────────────── -->
+<hr class="section-divider">
+<div class="section">
+  <div class="section-head">
+    <span class="section-num">2.</span>
+    <span class="section-title">Scrape Product Detail Pages</span>
+  </div>
+  <p class="section-desc">Visit each URL, extract 10–15 product attributes from the DOM. One scraper per retailer, with crash recovery built in.</p>
+
+  <p class="body-lead">Install Dependencies</p>
+  <div class="code-block">pip3 install playwright openpyxl beautifulsoup4 --break-system-packages
+python3 -m playwright install chromium</div>
+
+  <p class="body-lead">Choose Your Scraping Method</p>
+  <p class="body">Not every site needs a full browser. Sites that render product data server-side can use the much faster <code>web_fetch</code> approach. Sites with heavy JavaScript rendering or bot detection need Playwright.</p>
+
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Method</th><th>Speed</th><th>Use When</th><th>Example Sites</th></tr>
+      <tr><td>web_fetch</td><td>~1.5s/page</td><td>Product data is in the initial HTML response</td><td>Target, Old Navy, Macy's</td></tr>
+      <tr><td>Playwright</td><td>~3–4s/page</td><td>Data loads via JavaScript, or site has bot detection</td><td>Walmart, Amazon, Levi's</td></tr>
+    </table>
+  </div>
+
+  <p class="body-lead">Building a Scraper for a New Site</p>
+  <div class="steps">
+    <div class="step"><span class="step-num">1</span><span><b>Inspect the target site.</b> Open a product page in Chrome → right-click a data element (price, color swatch, product name) → Inspect. Note the CSS selector or <code>data-*</code> attribute.</span></div>
+    <div class="step"><span class="step-num">2</span><span><b>Test selectors in DevTools.</b> Run <code>document.querySelectorAll('YOUR_SELECTOR').length</code> in the console. Verify it returns the right count.</span></div>
+    <div class="step"><span class="step-num">3</span><span><b>Write a single-URL test script.</b> Scrape one known product and verify every field before running the full batch.</span></div>
+    <div class="step"><span class="step-num">4</span><span><b>Build the batch scraper</b> with crash recovery — save results every 100 URLs so a crash doesn't lose hours of work.</span></div>
+  </div>
+
+  <p class="body-lead">Crash Recovery Pattern</p>
+  <p class="body">Every scraper saves a <code>{retailer}_pdp_progress.json</code> checkpoint after each batch of 100 URLs. On restart, already-scraped URLs are skipped automatically. Just re-run the same command — it picks up where it left off.</p>
+
+  <p class="body-lead">Multi-Pass Strategy</p>
+  <p class="body">Expect ~5–10% of URLs to fail on the first pass (timeouts, CAPTCHAs, 503 errors). Plan for it:</p>
+  <div class="cards">
+    <div class="card">
+      <div class="card-title">Pass 1 — Bulk Scrape</div>
+      <div class="card-body">Run all URLs. Accept some "Unknown" or "ERROR" entries. Save results + error log.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Pass 2 — Error Recovery</div>
+      <div class="card-body">Re-scrape only failed URLs with lower concurrency and longer timeouts.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Pass 3 — Unknown Resolution</div>
+      <div class="card-body">For fields like color names that returned "Unknown", try alternative selectors or a different scraping method.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Pass 4 — Classification</div>
+      <div class="card-body">Run regex classifiers on extracted text. Batch web-search any names the regex can't handle.</div>
+    </div>
+  </div>
+
+  <div class="callout">For long runs (1,000+ URLs, 2–4 hours): keep your Mac plugged in, enable "Prevent automatic sleeping" in System Settings → Battery, and don't close the terminal or browser window. You can use other apps freely while it runs.</div>
+
+  <p class="body-lead">Anti-Detection Basics</p>
+  <div class="code-block"><span class="comment"># Launch visible browser (harder to detect than headless)</span>
+browser = await p.chromium.launch(headless=False,
+    args=["--disable-blink-features=AutomationControlled"])
+
+<span class="comment"># Mask the webdriver flag</span>
+await context.add_init_script(
+    "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"
+)
+
+<span class="comment"># Use a real-looking user agent</span>
+context = await browser.new_context(
+    user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) ...",
+    viewport={"width": 1280, "height": 800}
+)</div>
+
+  <p class="body-lead">Adaptive Throttling</p>
+  <p class="body">Instead of fixed sleep times, back off when errors spike and speed up when things are stable. Start at 1.5s delay. On error, multiply by 1.5× (max 10s). After 5 consecutive errors, pause 30s. On success, gradually reduce by 5% (min 1.0s).</p>
+</div>
+
+<!-- ─── PHASE 3 ───────────────────────────────────────────────────── -->
+<hr class="section-divider">
+<div class="section">
+  <div class="section-head">
+    <span class="section-num">3.</span>
+    <span class="section-title">Clean, Classify, and Unify</span>
+  </div>
+  <p class="section-desc">Normalize all retailer data into one consistent format. Classify creative color names. Backfill missing fields.</p>
+
+  <p class="body-lead">Unify Retailer Data</p>
+  <p class="body">Each scraper outputs slightly different column names and formats. A unification script normalizes everything into a single CSV — standardizing brand names, parsing prices (stripping "$" and commas), assigning retailer groups, and normalizing pack sizes for multi-packs.</p>
+  <div class="code-block">python3 unify_retailers.py
+<span class="comment"># Reads: all *_pdp_results.xlsx files</span>
+<span class="comment"># Writes: unified_retailer_data.csv</span></div>
+
+  <p class="body-lead">Color → Wash Classification</p>
+  <p class="body">Raw color names from retailers are a mix of standard names ("Dark Wash") and creative brand-specific names ("Ink Well", "Honey Crisp", "Salsa Verde"). A two-stage pipeline handles this:</p>
+
+  <div class="cards one">
+    <div class="card">
+      <div class="card-title">Stage 1 — Word-Boundary Regex (~85% coverage)</div>
+      <div class="card-body">
+        Patterns like <code>\b(dark|dk\b|rinse|indigo)\b</code> map most colors to standard categories: Light Wash, Medium Wash, Dark Wash, Black, White/Cream, Grey, Colored.<br><br>
+        <b>Word boundaries are critical.</b> Without <code>\b</code>, "light" matches "moonlight" and "grey" matches "greyhound". This was the single biggest source of misclassification bugs.
+      </div>
+    </div>
+  </div>
+  <div class="cards one">
+    <div class="card accent-gray">
+      <div class="card-title">Stage 2 — Web Search for Creative Names (~10–12% more)</div>
+      <div class="card-body">
+        Batch the remaining unclassified names into groups of 20. Search "What color is [Name1], [Name2], ... in jeans?" Parse results into a lookup table. This resolves most brand-specific names that regex can't handle.
+      </div>
+    </div>
+  </div>
+
+  <p class="body-lead">Field Normalization</p>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Challenge</th><th>Solution</th></tr>
+      <tr><td>Fit Style vs Leg Shape overlap</td><td>When one field is missing, fall back to the other using a mapping table (e.g., "Straight" leg shape → "Straight" fit)</td></tr>
+      <tr><td>Walmart multi-packs</td><td>Detect pack size from product name (regex for "2-pack", "3-pack"), divide price by pack count</td></tr>
+      <tr><td>Inconsistent brand names</td><td>Standardize capitalization and aliases (e.g., "Levi's" / "Levis" / "LEVI'S" → "Levi's")</td></tr>
+      <tr><td>Missing inseam / rise</td><td>Extract from product name if not in a dedicated field (regex for "28 inseam", "high rise")</td></tr>
+    </table>
+  </div>
+
+  <p class="body-lead">Prepare Dashboard Data</p>
+  <div class="code-block">python3 prep_data.py
+<span class="comment"># Reads: unified_retailer_data.csv</span>
+<span class="comment"># Writes: data.json (~1.8 MB, abbreviated field names)</span></div>
+  <p class="body">The output uses single-character keys (<code>b</code> for brand, <code>p</code> for price, <code>w</code> for wash, etc.) to minimize file size. A typical 4,000-product dataset produces ~1.8 MB of JSON.</p>
+
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Key</th><th>Field</th><th>Key</th><th>Field</th><th>Key</th><th>Field</th></tr>
+      <tr><td>b</td><td>Brand</td><td>g</td><td>Retailer group</td><td>n</td><td>Product name</td></tr>
+      <tr><td>p</td><td>Current price</td><td>o</td><td>Original price</td><td>c</td><td>Color name</td></tr>
+      <tr><td>w</td><td>Wash category</td><td>f</td><td>Fit style</td><td>l</td><td>Leg shape</td></tr>
+      <tr><td>r</td><td>Rise</td><td>i</td><td>Inseam</td><td>fb</td><td>Fabric</td></tr>
+      <tr><td>ct</td><td>Cotton %</td><td>fw</td><td>Fabric weight</td><td>pk</td><td>Pack size</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ─── PHASE 4 ───────────────────────────────────────────────────── -->
+<hr class="section-divider">
+<div class="section">
+  <div class="section-head">
+    <span class="section-num">4.</span>
+    <span class="section-title">Build the Dashboard</span>
+  </div>
+  <p class="section-desc">Assemble a self-contained HTML file with all data, CSS, and JavaScript embedded. No server required.</p>
+
+  <p class="body-lead">Architecture</p>
+  <p class="body">The build uses three source files that get combined into one HTML file. This separation exists because embedding complex JavaScript directly in a Python f-string causes syntax errors from template literals and special characters.</p>
+
+  <div class="cards three">
+    <div class="card">
+      <div class="card-title">app.js</div>
+      <div class="card-body">All chart logic, filters, toggles, interactions. <b>Must use ES5 syntax</b> — no arrow functions, template literals, or spread operators.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">data.json</div>
+      <div class="card-body">Compact product data from Phase 3. Embedded as <code>var RAW = [...];</code> in a script tag.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">build.py</div>
+      <div class="card-body">Reads both files, assembles the complete HTML with CSS theme, CDN links, and the side nav layout.</div>
+    </div>
+  </div>
+
+  <div class="code-block">python3 build.py
+<span class="comment"># Reads: app.js, data.json</span>
+<span class="comment"># Writes: index.html (~1.9 MB)</span></div>
+
+  <p class="body-lead">Why ES5?</p>
+  <p class="body">The JavaScript is embedded via Python f-string, which uses <code>{...}</code> for substitution. ES6 template literals (<code>${x}</code>), object spread (<code>{...obj}</code>), and arrow functions conflict with this and cause build failures. Use string concatenation, <code>function(){}</code>, and <code>Object.assign()</code> instead.</p>
+
+  <p class="body-lead">Dashboard Sections You Can Include</p>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>#</th><th>Section</th><th>Chart Types</th></tr>
+      <tr><td>—</td><td>Coverage Traffic Light</td><td>Table showing data completeness per retailer (% of fields populated)</td></tr>
+      <tr><td>01</td><td>Price Architecture</td><td>Horizontal box plots by retailer group + bubble chart price tier distribution</td></tr>
+      <tr><td>02</td><td>Brand Drill-Down</td><td>Click a retailer → see individual brand distributions with reference bars</td></tr>
+      <tr><td>03</td><td>Promotional Activity</td><td>% on sale bars, discount depth distribution</td></tr>
+      <tr><td>04</td><td>Color & Wash</td><td>Stacked percentage bars per retailer</td></tr>
+      <tr><td>05</td><td>Fit & Attributes</td><td>Stacked bars for fit style, leg shape, rise, inseam</td></tr>
+      <tr><td>06</td><td>Side-by-Side</td><td>Pick two retailers — compare everything head-to-head</td></tr>
+    </table>
+  </div>
+
+  <p class="body-lead">Hard-Won Lessons</p>
+  <p class="body">These are the bugs that cost hours. Keep them in mind while building.</p>
+
+  <div class="cards">
+    <div class="card accent-red">
+      <div class="card-title">Bubble Size Capping</div>
+      <div class="card-body">Never cap radius with <code>Math.min(r, maxR)</code> — all large bubbles look identical. Use relative scaling: <code>Math.sqrt(count/maxCount) * maxR</code>.</div>
+    </div>
+    <div class="card accent-red">
+      <div class="card-title">Stacked Bars ≠ 100%</div>
+      <div class="card-body">If a category exists in data but not in your order array, it silently gets excluded. Derive the array from data, don't hardcode.</div>
+    </div>
+    <div class="card accent-red">
+      <div class="card-title">Toggle Button Sync</div>
+      <div class="card-body">When a toggle appears in multiple sections, the handler must update ALL button groups. Use <code>i % 2</code> to reset index per pair.</div>
+    </div>
+    <div class="card accent-red">
+      <div class="card-title">Invisible Active State</div>
+      <div class="card-body">White active background on a white page = invisible button. Use high-contrast: <code>background:#002855; color:#fff</code>.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── PHASE 5 ───────────────────────────────────────────────────── -->
+<hr class="section-divider">
+<div class="section">
+  <div class="section-head">
+    <span class="section-num">5.</span>
+    <span class="section-title">Deploy</span>
+  </div>
+  <p class="section-desc">Push to GitHub Pages. One command, live in under two minutes.</p>
+
+  <div class="code-block">git add index.html
+git commit -m "Update dashboard — $(date +%Y-%m-%d)"
+git push origin main</div>
+
+  <p class="body"><b>GitHub Pages config:</b> Settings → Pages → Source: "Deploy from a branch" → Branch: <code>main</code>, folder: <code>/ (root)</code>.</p>
+
+  <div class="callout">Keep a single <code>index.html</code> at the repo root — this is the only file that matters. Archive old versions to an <code>archive/</code> folder. Never have multiple HTML files in the root — it leads to confusion about which one is live.</div>
+
+  <p class="body">If <code>git push</code> fails with an index.lock error, run <code>rm -f .git/index.lock</code> first. This happens when a previous git process crashed.</p>
+</div>
+
+<!-- ─── REFRESHING DATA ───────────────────────────────────────────── -->
+<hr class="section-divider">
+<div class="section">
+  <div class="section-head">
+    <span class="section-num">6.</span>
+    <span class="section-title">Refreshing the Data</span>
+  </div>
+  <p class="section-desc">To update with a fresh scrape, re-run from the phase where something changed.</p>
+
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>What Changed</th><th>Start From</th></tr>
+      <tr><td>New retailer added</td><td>Phase 1 — collect URLs for the new site, build a scraper, then run Phases 2–5</td></tr>
+      <tr><td>Existing retailer data is stale</td><td>Phase 1 — re-crawl URLs (products may have been added/removed), then Phases 2–5</td></tr>
+      <tr><td>Classification rules improved</td><td>Phase 3 — re-run cleaning scripts, then Phases 4–5</td></tr>
+      <tr><td>Dashboard layout or chart changes</td><td>Phase 4 — edit app.js, rebuild, deploy</td></tr>
+      <tr><td>Typo or cosmetic fix in HTML</td><td>Phase 5 — edit index.html directly, push</td></tr>
+    </table>
+  </div>
+
+  <div class="code-block"><span class="comment"># Full refresh — all phases</span>
+
+<span class="comment"># 1. Collect fresh URLs via Instant Data Scraper → save CSVs</span>
+
+<span class="comment"># 2. Scrape all retailers</span>
+python3 target_pdp_scraper.py
+python3 walmart_pdp_scraper.py
+python3 amazon_pdp_scraper.py
+<span class="comment"># ... repeat for each retailer</span>
+
+<span class="comment"># 3. Unify + classify</span>
+python3 unify_retailers.py
+python3 fix_wash.py
+python3 enrich_dashboard.py
+python3 prep_data.py
+
+<span class="comment"># 4. Build</span>
+python3 build.py
+
+<span class="comment"># 5. Deploy</span>
+git add index.html && git commit -m "Refresh data" && git push origin main</div>
+</div>
+
+<!-- ─── ADAPTING TO OTHER CATEGORIES ──────────────────────────────── -->
+<hr class="section-divider">
+<div class="section">
+  <div class="section-head">
+    <span class="section-num">7.</span>
+    <span class="section-title">Adapting to Other Product Categories</span>
+  </div>
+  <p class="section-desc">This pipeline isn't specific to women's jeans. Here's what to change for a different category.</p>
+
+  <div class="cards">
+    <div class="card">
+      <div class="card-title">Phase 1 — New Category Pages</div>
+      <div class="card-body">Navigate to the right category page on each retailer. The Instant Data Scraper process is identical.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Phase 2 — Update Selectors</div>
+      <div class="card-body">CSS selectors change by category. Inspect the new product pages and update each scraper's selector config. The scraping architecture (crash recovery, concurrency, throttling) stays the same.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Phase 3 — New Classification Rules</div>
+      <div class="card-body">Replace wash categories with whatever's relevant — e.g., for sneakers: "Running", "Casual", "Basketball". Update regex patterns accordingly.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Phase 4 — Adjust Dashboard Sections</div>
+      <div class="card-body">Swap chart sections to match your data. Jeans have wash/fit/rise; sneakers might have cushioning/material/sport. The chart components (box plots, bubbles, stacked bars) are reusable.</div>
+    </div>
+  </div>
+
+  <div class="callout">The most time-consuming part of adapting is Phase 2 — finding the right selectors for each retailer's new category pages. Budget 30–60 minutes per retailer for selector discovery and testing. Everything else is relatively mechanical.</div>
+</div>
+
+<!-- ─── TECH STACK ────────────────────────────────────────────────── -->
+<hr class="section-divider">
+<div class="section">
+  <div class="section-head">
+    <span class="section-num">8.</span>
+    <span class="section-title">Tech Stack</span>
+  </div>
+
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Layer</th><th>Tool</th><th>Why</th></tr>
+      <tr><td>URL collection</td><td>Instant Data Scraper (Chrome)</td><td>Free, no-code, handles pagination automatically</td></tr>
+      <tr><td>Scraping</td><td>Playwright (async Python)</td><td>Full browser for JS-rendered sites. Headless-false for anti-detection</td></tr>
+      <tr><td>Scraping (fast)</td><td>web_fetch / requests</td><td>~3× faster for server-rendered sites that don't need JS execution</td></tr>
+      <tr><td>Data processing</td><td>Python (pandas, openpyxl)</td><td>Standard data wrangling. openpyxl for Excel I/O</td></tr>
+      <tr><td>Charts</td><td>Chart.js 4.4.4</td><td>Rich interactive charts with plugin ecosystem</td></tr>
+      <tr><td>Sunbursts / trees</td><td>D3.js 7</td><td>For hierarchical category visualizations</td></tr>
+      <tr><td>Typography</td><td>Montserrat (Google Fonts)</td><td>Clean consulting-grade look. Weights 400–800</td></tr>
+      <tr><td>Deployment</td><td>GitHub Pages</td><td>Free static hosting. Push to deploy.</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ─── FOOTER ────────────────────────────────────────────────────── -->
+<div class="footer">Pipeline Guide &nbsp;|&nbsp; April 2026</div>
+
+</div>
+</body>
+</html>

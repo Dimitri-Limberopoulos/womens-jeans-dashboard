@@ -3,7 +3,13 @@
 Production Walmart PDP Scraper — 1 Row per Product × Color
 ===========================================================
 Input:  walmart.csv  (URLs in first column 'w-100 href')
-Output: walmart_pdp_results.xlsx + walmart_pdp_progress.json
+        — or override via env vars:
+          WALMART_INPUT=<path>          path to .csv (with 'w-100 href' col,
+                                         and optional 'z-2 href[,2,3]') OR a
+                                         .json list of URL strings
+          WALMART_OUTPUT_PREFIX=<name>  prefix for output files
+                                         (default: 'walmart_pdp')
+Output: <PREFIX>_results.xlsx + <PREFIX>_progress.json
 
 Architecture: 5 browser contexts × 2 tabs each = 10 parallel workers
               30-minute auto-restart for fresh sessions
@@ -1029,9 +1035,20 @@ EXCEL_HEADERS = [
 ]
 
 
+OUTPUT_PREFIX = os.environ.get("WALMART_OUTPUT_PREFIX", "walmart_pdp")
+
+
+def _progress_path(d):
+    return os.path.join(d, OUTPUT_PREFIX + "_progress.json")
+
+
+def _xlsx_path(d):
+    return os.path.join(d, OUTPUT_PREFIX + "_results.xlsx")
+
+
 def load_progress(d):
     """Load progress and results from files."""
-    p = os.path.join(d, "walmart_pdp_progress.json")
+    p = _progress_path(d)
     processed = set()
     if os.path.exists(p):
         with open(p) as f:
@@ -1039,7 +1056,7 @@ def load_progress(d):
         processed = set(data.get('processed', []))
 
     results = []
-    xlsx_path = os.path.join(d, "walmart_pdp_results.xlsx")
+    xlsx_path = _xlsx_path(d)
     if os.path.exists(xlsx_path):
         try:
             from openpyxl import load_workbook as lwb
@@ -1062,7 +1079,7 @@ def load_progress(d):
 
 def save_progress(progress, d):
     """Save progress to JSON file."""
-    with open(os.path.join(d, "walmart_pdp_progress.json"), 'w') as f:
+    with open(_progress_path(d), 'w') as f:
         json.dump({
             'processed': list(progress['processed']),
             'last_save': datetime.now().isoformat(),
@@ -1072,7 +1089,7 @@ def save_progress(progress, d):
 
 def save_to_excel(results, d):
     """Save results to Excel file with formatting."""
-    out = os.path.join(d, "walmart_pdp_results.xlsx")
+    out = _xlsx_path(d)
     wb = Workbook()
     ws = wb.active
     ws.title = 'Walmart PDP Results'
@@ -1537,27 +1554,78 @@ async def run_batch(p, urls, results, progress, stats, throttle, sdir):
     return finished
 
 
+def _load_urls_from_csv(csv_path):
+    """Load Walmart URLs from a CSV. Picks up the primary 'w-100 href'
+    column and any color-variant columns ('z-2 href', 'z-2 href 2', ...).
+    De-dupes on the canonical /ip/<slug>/<id> path.
+    """
+    URL_COLS_PREFIX = ('w-100 href', 'z-2 href')
+    seen = set()
+    urls = []
+
+    def _canon(u):
+        m = re.match(r'(https://www\.walmart\.com/ip/[^?]+)', u or '')
+        return m.group(1) if m else None
+
+    with open(csv_path, 'r', encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+        url_cols = [c for c in (reader.fieldnames or [])
+                    if c and any(c.startswith(p) for p in URL_COLS_PREFIX)]
+        if not url_cols:
+            # Fallback: first column, no header parsing
+            f.seek(0)
+            r2 = csv.reader(f)
+            next(r2, None)
+            for row in r2:
+                if row and row[0].strip().startswith('http'):
+                    c = _canon(row[0].strip())
+                    if c and c not in seen:
+                        seen.add(c)
+                        urls.append(row[0].strip())
+            return urls
+        for row in reader:
+            for col in url_cols:
+                u = (row.get(col) or '').strip()
+                if not u.startswith('http'):
+                    continue
+                c = _canon(u)
+                if c and c not in seen:
+                    seen.add(c)
+                    urls.append(u)
+    return urls
+
+
+def _load_urls_from_json(json_path):
+    with open(json_path, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+    if isinstance(data, list):
+        return [u for u in data if isinstance(u, str) and u.startswith('http')]
+    if isinstance(data, dict):
+        # accept {"urls": [...]} or {"<id>": "<url>"}
+        if 'urls' in data and isinstance(data['urls'], list):
+            return [u for u in data['urls'] if isinstance(u, str) and u.startswith('http')]
+        return [v for v in data.values() if isinstance(v, str) and v.startswith('http')]
+    return []
+
+
 async def main():
     sdir = os.path.dirname(os.path.abspath(__file__))
-    csv_path = os.path.join(sdir, "walmart.csv")
+    input_arg = os.environ.get("WALMART_INPUT", "walmart.csv")
+    in_path = input_arg if os.path.isabs(input_arg) else os.path.join(sdir, input_arg)
 
-    if not os.path.exists(csv_path):
-        print(f"CSV not found at {csv_path}")
+    if not os.path.exists(in_path):
+        print(f"Input not found at {in_path}")
         return
 
-    # Load URLs from CSV (first column is 'w-100 href')
-    urls = []
+    print(f"Reading URLs from: {in_path}")
+    print(f"Output prefix:     {OUTPUT_PREFIX}  (=> {_xlsx_path(sdir)})")
     try:
-        with open(csv_path, 'r', encoding='utf-8') as f:
-            reader = csv.reader(f)
-            next(reader)  # skip header
-            for row in reader:
-                if row:
-                    url = row[0].strip()
-                    if url.startswith('http'):
-                        urls.append(url)
+        if in_path.lower().endswith('.json'):
+            urls = _load_urls_from_json(in_path)
+        else:
+            urls = _load_urls_from_csv(in_path)
     except Exception as e:
-        print(f"Error reading CSV: {e}")
+        print(f"Error reading input: {e}")
         return
 
     print(f"Loaded {len(urls)} Walmart URLs")
