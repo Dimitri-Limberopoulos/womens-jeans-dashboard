@@ -110,6 +110,229 @@ h2{font-size:clamp(1.3rem,2.5vw,1.8rem);line-height:1.2}
 </style>
 </head>
 <body>
+<!-- ACCESS_GATE_INJECT_BEGIN -->
+<style id="access-gate-css">
+#access-gate {
+  position: fixed; inset: 0; z-index: 999999;
+  background: #fafafa;
+  display: flex; align-items: center; justify-content: center;
+  font-family: Montserrat, system-ui, sans-serif;
+}
+#access-gate.hidden { display: none; }
+#access-gate-card {
+  background: #fff; border: 1px solid #e5e5e5; border-radius: 12px;
+  padding: 36px 40px; width: 380px; max-width: calc(100vw - 32px);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+}
+#access-gate-title {
+  font-size: 1.05rem; font-weight: 800; color: #1a1a1a;
+  margin: 0 0 6px; letter-spacing: -.01em;
+}
+#access-gate-sub {
+  font-size: .78rem; color: #666; margin: 0 0 20px; line-height: 1.5;
+}
+#access-gate-card label {
+  display: block; font-size: .68rem; font-weight: 700;
+  letter-spacing: .06em; text-transform: uppercase; color: #666;
+  margin-bottom: 6px;
+}
+#access-gate-card input {
+  width: 100%; box-sizing: border-box;
+  padding: 10px 12px; font-size: .85rem; font-family: inherit;
+  border: 1.5px solid #d1d5db; border-radius: 6px;
+  margin-bottom: 14px; transition: border-color .15s;
+}
+#access-gate-card input:focus {
+  outline: none; border-color: #CC0000;
+}
+#access-gate-btn {
+  width: 100%; padding: 12px; font-size: .82rem; font-weight: 700;
+  letter-spacing: .04em; text-transform: uppercase;
+  background: #CC0000; color: #fff; border: none; border-radius: 6px;
+  cursor: pointer; transition: background .15s;
+  font-family: inherit;
+}
+#access-gate-btn:hover { background: #a30000; }
+#access-gate-btn:disabled { background: #999; cursor: not-allowed; }
+#access-gate-error {
+  color: #CC0000; font-size: .72rem; font-weight: 600;
+  min-height: 18px; margin-bottom: 8px;
+}
+#access-gate-foot {
+  font-size: .65rem; color: #999; margin-top: 14px;
+  text-align: center; line-height: 1.5;
+}
+#access-gate-foot strong { color: #666; }
+</style>
+
+<div id="access-gate" role="dialog" aria-labelledby="access-gate-title" aria-modal="true">
+  <div id="access-gate-card">
+    <div id="access-gate-title">Access restricted</div>
+    <p id="access-gate-sub">
+      This dashboard is shared with the Target Owned Brand team and Alvarez &amp; Marsal project team. Enter your work email and the access password to continue.
+    </p>
+    <form id="access-gate-form" autocomplete="on">
+      <label for="ag-email">Work email</label>
+      <input type="email" id="ag-email" required autocomplete="email"
+             placeholder="you@target.com or you@alvarezandmarsal.com">
+      <label for="ag-password">Access password</label>
+      <input type="password" id="ag-password" required autocomplete="current-password"
+             placeholder="Shared password">
+      <div id="access-gate-error" aria-live="polite"></div>
+      <button type="submit" id="access-gate-btn">Enter dashboard</button>
+    </form>
+    <div id="access-gate-foot">
+      <strong>Confidential.</strong> Access is logged.
+    </div>
+  </div>
+</div>
+
+<script id="access-gate-js">
+(function () {
+  // ── Configuration — edit these values to match your deployment ──────
+  window.ACCESS_GATE_CONFIG = {
+    // Allowed email domains (case-insensitive). One of these must match.
+    allowedDomains: ['target.com', 'alvarezandmarsal.com'],
+
+    // SHA-256 hex hash of the access password.
+    // To set a new password, run in console:  await ACCESS_GATE_HASH('your-pw')
+    // and replace this string with the output.
+    passwordHash: '9099754fcb2d0a63d139baf5404c162406c09017426b953f0f04a9681db0bd57',
+
+    // Google Apps Script Web App URL that logs the email to a sheet.
+    // Leave empty to disable logging. See GATE_SETUP.md for setup steps.
+    logEndpoint: '',
+
+    // How many days the gate stays "passed" in the same browser before
+    // re-prompting. Set to 0 to require auth on every page load.
+    stickyDays: 7,
+  };
+
+  function $(id) { return document.getElementById(id); }
+  function showError(msg) { $('access-gate-error').textContent = msg || ''; }
+
+  async function sha256(text) {
+    var data = new TextEncoder().encode(text);
+    var buf = await crypto.subtle.digest('SHA-256', data);
+    return Array.from(new Uint8Array(buf))
+      .map(function (b) { return b.toString(16).padStart(2, '0'); })
+      .join('');
+  }
+  // Expose helper so users can compute new password hashes from the console
+  window.ACCESS_GATE_HASH = sha256;
+
+  function isDomainAllowed(email) {
+    var m = /@([^@\s]+)$/.exec((email || '').trim().toLowerCase());
+    if (!m) return false;
+    var domain = m[1];
+    var allowed = (window.ACCESS_GATE_CONFIG.allowedDomains || []).map(function (d) {
+      return d.toLowerCase();
+    });
+    return allowed.indexOf(domain) >= 0;
+  }
+
+  function isStickyValid() {
+    try {
+      var raw = localStorage.getItem('access-gate-passed');
+      if (!raw) return false;
+      var data = JSON.parse(raw);
+      var stickyDays = window.ACCESS_GATE_CONFIG.stickyDays || 0;
+      if (stickyDays <= 0) return false;
+      var ageMs = Date.now() - (data.ts || 0);
+      var maxAge = stickyDays * 24 * 60 * 60 * 1000;
+      if (ageMs > maxAge) return false;
+      // Validate that the sticky was issued for the current password
+      // (so changing the password invalidates all sticky sessions).
+      return data.h === window.ACCESS_GATE_CONFIG.passwordHash;
+    } catch (e) { return false; }
+  }
+
+  function setSticky(email) {
+    try {
+      localStorage.setItem('access-gate-passed', JSON.stringify({
+        ts: Date.now(),
+        email: email,
+        h: window.ACCESS_GATE_CONFIG.passwordHash,
+      }));
+    } catch (e) {}
+  }
+
+  function logAccess(email, success) {
+    var url = window.ACCESS_GATE_CONFIG.logEndpoint;
+    if (!url) return;
+    try {
+      // Use no-cors so the Apps Script POST works without CORS preflight.
+      // We don't read the response anyway.
+      fetch(url, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: JSON.stringify({
+          email: email || '',
+          success: !!success,
+          ts: new Date().toISOString(),
+          ua: navigator.userAgent || '',
+          ref: document.referrer || '',
+        }),
+      }).catch(function () {});
+    } catch (e) {}
+  }
+
+  function hideGate() {
+    var g = $('access-gate');
+    if (g) g.classList.add('hidden');
+  }
+
+  async function onSubmit(ev) {
+    ev.preventDefault();
+    showError('');
+    var emailInput = $('ag-email');
+    var pwInput = $('ag-password');
+    var btn = $('access-gate-btn');
+    var email = (emailInput.value || '').trim();
+    var pw = pwInput.value || '';
+
+    if (!email) { showError('Enter your work email.'); return; }
+    if (!isDomainAllowed(email)) {
+      showError('Email must end in @target.com or @alvarezandmarsal.com.');
+      logAccess(email, false);
+      return;
+    }
+    if (!pw) { showError('Enter the access password.'); return; }
+
+    btn.disabled = true;
+    btn.textContent = 'Verifying…';
+    try {
+      var hash = await sha256(pw);
+      if (hash !== window.ACCESS_GATE_CONFIG.passwordHash) {
+        showError('Incorrect password.');
+        logAccess(email, false);
+        btn.disabled = false; btn.textContent = 'Enter dashboard';
+        return;
+      }
+      setSticky(email);
+      logAccess(email, true);
+      hideGate();
+    } catch (e) {
+      console.error('access gate:', e);
+      showError('Something went wrong. Try again.');
+      btn.disabled = false; btn.textContent = 'Enter dashboard';
+    }
+  }
+
+  function init() {
+    var form = $('access-gate-form');
+    if (!form) return;
+    form.addEventListener('submit', onSubmit);
+    if (isStickyValid()) hideGate();
+    else { try { $('ag-email').focus(); } catch (e) {} }
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else { init(); }
+})();
+</script>
+<!-- ACCESS_GATE_INJECT_END -->
+
 <div class="page-wrapper">
 
 <nav class="side-nav">
