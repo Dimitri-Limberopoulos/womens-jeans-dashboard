@@ -54,13 +54,6 @@ GATE_BLOCK = '''<style id="access-gate-css">
   padding: 36px 40px; width: 380px; max-width: calc(100vw - 32px);
   box-shadow: 0 4px 24px rgba(0,0,0,0.08);
 }
-#access-gate-title {
-  font-size: 1.05rem; font-weight: 800; color: #1a1a1a;
-  margin: 0 0 6px; letter-spacing: -.01em;
-}
-#access-gate-sub {
-  font-size: .78rem; color: #666; margin: 0 0 20px; line-height: 1.5;
-}
 #access-gate-card label {
   display: block; font-size: .68rem; font-weight: 700;
   letter-spacing: .06em; text-transform: uppercase; color: #666;
@@ -90,12 +83,8 @@ GATE_BLOCK = '''<style id="access-gate-css">
 }
 </style>
 
-<div id="access-gate" role="dialog" aria-labelledby="access-gate-title" aria-modal="true">
+<div id="access-gate" role="dialog" aria-modal="true">
   <div id="access-gate-card">
-    <div id="access-gate-title">Access restricted</div>
-    <p id="access-gate-sub">
-      This dashboard is shared with the Target Owned Brand team and Alvarez &amp; Marsal project team. Enter your work email and the access password to continue.
-    </p>
     <form id="access-gate-form" autocomplete="on">
       <label for="ag-email">Work email</label>
       <input type="email" id="ag-email" required autocomplete="email"
