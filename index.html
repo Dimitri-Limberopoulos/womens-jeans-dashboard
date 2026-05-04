@@ -274,7 +274,7 @@ h2{font-size:clamp(1.3rem,2.5vw,1.8rem);line-height:1.2}
 
     if (!email) { showError('Enter your work email.'); return; }
     if (!isDomainAllowed(email)) {
-      showError('Email must end in @target.com or @alvarezandmarsal.com.');
+      showError('you do not have access to this dashboard with your email');
       logAccess(email, false);
       return;
     }

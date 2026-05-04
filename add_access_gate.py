@@ -204,7 +204,7 @@ GATE_BLOCK = '''<style id="access-gate-css">
 
     if (!email) { showError('Enter your work email.'); return; }
     if (!isDomainAllowed(email)) {
-      showError('Email must end in @target.com or @alvarezandmarsal.com.');
+      showError('you do not have access to this dashboard with your email');
       logAccess(email, false);
       return;
     }
