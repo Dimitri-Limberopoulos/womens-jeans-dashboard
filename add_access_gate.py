@@ -112,7 +112,7 @@ GATE_BLOCK = '''<style id="access-gate-css">
 
     // Google Apps Script Web App URL that logs the email to a sheet.
     // Leave empty to disable logging. See GATE_SETUP.md for setup steps.
-    logEndpoint: '',
+    logEndpoint: 'https://script.google.com/macros/s/AKfycbxRrkMDqy0Z060oQ8O50RPVrDTkHrjWPUl3v8CyLzkCH5Q7smJWhbHpwZjoyj6ioAbF/exec',
 
     // How many days the gate stays "passed" in the same browser before
     // re-prompting. Set to 0 to require auth on every page load.
