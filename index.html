@@ -158,11 +158,6 @@ h2{font-size:clamp(1.3rem,2.5vw,1.8rem);line-height:1.2}
   color: #CC0000; font-size: .72rem; font-weight: 600;
   min-height: 18px; margin-bottom: 8px;
 }
-#access-gate-foot {
-  font-size: .65rem; color: #999; margin-top: 14px;
-  text-align: center; line-height: 1.5;
-}
-#access-gate-foot strong { color: #666; }
 </style>
 
 <div id="access-gate" role="dialog" aria-labelledby="access-gate-title" aria-modal="true">
@@ -181,9 +176,6 @@ h2{font-size:clamp(1.3rem,2.5vw,1.8rem);line-height:1.2}
       <div id="access-gate-error" aria-live="polite"></div>
       <button type="submit" id="access-gate-btn">Enter dashboard</button>
     </form>
-    <div id="access-gate-foot">
-      <strong>Confidential.</strong> Access is logged.
-    </div>
   </div>
 </div>
 
@@ -197,7 +189,7 @@ h2{font-size:clamp(1.3rem,2.5vw,1.8rem);line-height:1.2}
     // SHA-256 hex hash of the access password.
     // To set a new password, run in console:  await ACCESS_GATE_HASH('your-pw')
     // and replace this string with the output.
-    passwordHash: '9099754fcb2d0a63d139baf5404c162406c09017426b953f0f04a9681db0bd57',
+    passwordHash: '29c08c5d9ae5b847d18681c92be3180fe1b2256b878baa64d8d56c71c060492b',
 
     // Google Apps Script Web App URL that logs the email to a sheet.
     // Leave empty to disable logging. See GATE_SETUP.md for setup steps.
@@ -332,6 +324,8 @@ h2{font-size:clamp(1.3rem,2.5vw,1.8rem);line-height:1.2}
 })();
 </script>
 <!-- ACCESS_GATE_INJECT_END -->
+
+
 
 <div class="page-wrapper">
 

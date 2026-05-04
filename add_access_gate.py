@@ -38,8 +38,8 @@ INDEX_HTML = os.path.join(HERE, "index.html")
 MARKER_BEGIN = "<!-- ACCESS_GATE_INJECT_BEGIN -->"
 MARKER_END = "<!-- ACCESS_GATE_INJECT_END -->"
 
-# Default password: "TargetOB2026" — change in index.html after first deploy
-DEFAULT_PASSWORD_HASH = "9099754fcb2d0a63d139baf5404c162406c09017426b953f0f04a9681db0bd57"
+# Default password: "Jeans2026!" — change in index.html after first deploy
+DEFAULT_PASSWORD_HASH = "29c08c5d9ae5b847d18681c92be3180fe1b2256b878baa64d8d56c71c060492b"
 
 GATE_BLOCK = '''<style id="access-gate-css">
 #access-gate {
@@ -88,11 +88,6 @@ GATE_BLOCK = '''<style id="access-gate-css">
   color: #CC0000; font-size: .72rem; font-weight: 600;
   min-height: 18px; margin-bottom: 8px;
 }
-#access-gate-foot {
-  font-size: .65rem; color: #999; margin-top: 14px;
-  text-align: center; line-height: 1.5;
-}
-#access-gate-foot strong { color: #666; }
 </style>
 
 <div id="access-gate" role="dialog" aria-labelledby="access-gate-title" aria-modal="true">
@@ -111,9 +106,6 @@ GATE_BLOCK = '''<style id="access-gate-css">
       <div id="access-gate-error" aria-live="polite"></div>
       <button type="submit" id="access-gate-btn">Enter dashboard</button>
     </form>
-    <div id="access-gate-foot">
-      <strong>Confidential.</strong> Access is logged.
-    </div>
   </div>
 </div>
 
